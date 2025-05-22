@@ -29,6 +29,7 @@ python-source = "src"
 manifest-path = "symrank-core/Cargo.toml"
 module-name = "symrank" # <-- matches Rust crate name
 bindings = "pyo3" # <-- explicitly state to maturin that it's a PyO3 project
+include = ["LICENSE", "NOTICE", "README.md", "src/**"]
 
 [project.optional-dependencies]
 dev = [
