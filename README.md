@@ -27,7 +27,7 @@
 
 <!-- badges: end -->
 
-## What is SymRank?
+## ✨ What is SymRank?
 **SymRank** is a blazing-fast Python library for top-k cosine similarity ranking, designed for vector search, retrieval-augmented generation (RAG), and embedding-based matching.
 
 Built with a Rust + SIMD backend, it offers the speed of native code with the ease of Python.
