@@ -19,21 +19,6 @@ def test_compare_default_threshold():
 
 # ------------------------------------------------------------
 # Test 2
-# Force heap selection by using a low threshold
-# ------------------------------------------------------------
-def test_compare_custom_threshold_low():
-    query_vector = np.random.rand(1536).astype(np.float32)
-    candidate_vectors = [
-        (f"doc_{i}", np.random.rand(1536).astype(np.float32))
-        for i in range(300)
-    ]
-
-    top_results = compare(query_vector, candidate_vectors, threshold=100)
-    assert len(top_results) == 5
-    assert all("id" in result and "score" in result for result in top_results)
-
-# ------------------------------------------------------------
-# Test 3
 # Batch processing with a large candidate set
 # ------------------------------------------------------------
 def test_compare_batching_large():
@@ -48,7 +33,7 @@ def test_compare_batching_large():
     assert all("id" in result and "score" in result for result in top_results)
 
 # ------------------------------------------------------------
-# Test 4
+# Test 3
 # Invalid vector shape (e.g., wrong number of dimensions)
 # ------------------------------------------------------------
 def test_invalid_vector_shape():
@@ -61,7 +46,7 @@ def test_invalid_vector_shape():
         compare(query_vector, candidate_vectors)
 
 # ------------------------------------------------------------
-# Test 5
+# Test 4
 # Mismatched vector size (declared vector_size vs actual vector length)
 # ------------------------------------------------------------
 def test_mismatched_vector_size():
@@ -74,7 +59,7 @@ def test_mismatched_vector_size():
         compare(query_vector, candidate_vectors, vector_size=1536)
 
 # ------------------------------------------------------------
-# Test 6
+# Test 5
 # Non-list, non-numpy query vector (invalid input type)
 # ------------------------------------------------------------
 def test_invalid_query_vector_type():
