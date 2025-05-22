@@ -33,7 +33,7 @@ Built with a Rust + SIMD backend, it offers the speed of native code with the ea
 
 ## 📦 Installation
 
-You can install SymRank either with 'uv' or 'pip'.
+You can install SymRank with 'uv' or alternatively using 'pip'.
 
 ### Recommended (with uv):
 ```bash
