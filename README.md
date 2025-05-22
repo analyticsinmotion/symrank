@@ -2,13 +2,30 @@
 
 <h1 align="center">Similarity ranking for Retrieval-Augmented Generation</h1>
 
-
 <!-- badges: start -->
 
-
+<div align="center">
+  <table>
+    <tr>
+      <td><strong>Meta</strong></td>
+      <td>
+        <a href="https://pypi.org/project/symrank/"><img src="https://img.shields.io/pypi/v/symrank?label=PyPI&color=blue"></a>&nbsp;
+        <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%7C3.11%7C3.12%7C3.13-blue?logo=python&logoColor=ffdd54"></a>&nbsp;
+        <a href="https://github.com/analyticsinmotion/symrank/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"></a>&nbsp;
+        <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv"></a>&nbsp;
+        <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>&nbsp;
+        <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/Powered%20by-Rust-black?logo=rust&logoColor=white" alt="Powered by Rust"></a>&nbsp;
+        <a href="https://github.com/analyticsinmotion"><img src="https://raw.githubusercontent.com/analyticsinmotion/.github/main/assets/images/analytics-in-motion-github-badge-rounded.svg" alt="Analytics in Motion"></a>
+        <!-- &nbsp;
+        <a href="https://pypi.org/project/symrank/"><img src="https://img.shields.io/pypi/dm/symrank?label=PyPI%20downloads"></a>&nbsp;
+        <a href="https://pepy.tech/project/symrank"><img src="https://static.pepy.tech/badge/symrank"></a>
+        -->
+      </td>
+    </tr>
+  </table>
+</div>
 
 <!-- badges: end -->
-
 
 ## What is SymRank?
 **SymRank** is a blazing-fast Python library for top-k cosine similarity ranking, designed for vector search, retrieval-augmented generation (RAG), and embedding-based matching.
