@@ -29,6 +29,7 @@ Built with a Rust + SIMD backend, it offers the speed of native code with the ea
 
 🦀 Powered by Rust: Safe, high-performance core engine
 
+<br/>
 
 ## 📦 Installation
 
@@ -88,12 +89,12 @@ compare(
 
 | Parameter         | Type                                               | Default     | Description |
 |-------------------|----------------------------------------------------|-------------|-------------|
-| 'query_vector'     | 'List[float]' or 'np.ndarray'                      | _required_  | Vector to search with |
-| 'candidate_vectors'| 'List[Tuple[str, List[float] or np.ndarray]]'      | _required_  | `(id, vector)` pairs to compare against |
-| 'method'           | 'str'                                              | '"cosine"'  | Similarity method (only "cosine" supported) |
-| 'top_k'            | 'int'                                              | '5'         | Number of results to return |
-| 'vector_size'      | 'int'                                              | '1536'      | Dimensionality of all vectors |
-| 'batch_size'       | 'int or None'                                      | 'None'      | Optional batch size to reduce memory use |
+| `query_vector`     | List[float] or np.ndarray                      | _required_  | Vector to search with |
+| `candidate_vectors`| List[Tuple[str, List[float] or np.ndarray]]      | _required_  | (id, vector) pairs to compare against |
+| `method`           | str                                              | "cosine"  | Similarity method (E.g. "cosine") |
+| `top_k`            | int                                              | '5'         | Number of results to return |
+| `vector_size`      | int                                              | '1536'      | Dimensionality of all vectors |
+| `batch_size`       | int or None                                      | 'None'      | Optional batch size to reduce memory use |
 
 
 ### Returns
@@ -107,7 +108,7 @@ List of dictionaries with `id` and `score` (cosine similarity):
 
 
 
-<!-->
+<!--
 ## Usage
 **Import the SymRank package**
 
