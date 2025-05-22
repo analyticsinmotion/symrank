@@ -18,6 +18,21 @@ classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering",
 ]
+keywords = [
+  "symrank",
+  "vector similarity",
+  "cosine similarity",
+  "ranking",
+  "reranking",
+  "retrieval",
+  "rag",
+  "retrieval-augmented-generation",
+  "semantic search",
+  "embedding search",
+  "vector search",
+  "machine learning",
+  "information retrieval"
+]
 dependencies = []
 
 [build-system]
