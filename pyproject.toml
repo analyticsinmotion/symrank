@@ -1,0 +1,41 @@
+[project]
+name = "symrank"
+version = "0.1.0"
+description = "High-performance cosine similarity ranking for Retrieval-Augmented Generation (RAG) pipelines, vector search, and information retrieval, with a Python interface powered by a Rust backend."
+readme = "README.md"
+authors = [
+    { name = "Ross Armstrong", email = "ross.armstrong@analyticsinmotion.com" }
+]
+requires-python = ">=3.13"
+license = {file = 'LICENSE'}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = []
+
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+#[tool.setuptools]
+#package-dir = {"" = "src"}
+
+[tool.maturin]
+python-source = "src"
+manifest-path = "symrank-core/Cargo.toml"
+module-name = "symrank" # <-- matches Rust crate name
+bindings = "pyo3" # <-- explicitly state to maturin that it's a PyO3 project
+
+[project.optional-dependencies]
+dev = [
+    "maturin >=1.8.3",
+    "pytest >=8.3.5",
+    "scikit-learn >=1.6.1",
+    ]

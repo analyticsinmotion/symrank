@@ -1,0 +1,25 @@
+[package]
+name = "symrank" # <-- Rust crate name
+version = "0.1.0"
+edition = "2021"
+resolver = "2" # <-- Avoid compiling unnecessary features from dependencies.
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "symrank" # <-- This is the name of the compiled Python module
+crate-type = ["cdylib"]
+
+[dependencies]
+ndarray = { version = "0.16.1", features = ["rayon"] }
+numpy = "0.25.0"
+ordered-float = "5.0.0"
+pyo3 = { version = "0.25.0", features = ["extension-module"] }
+rayon = "1.10.0"
+rand = "0.9.1" 
+wide = "0.7.32" # <-- SIMD support for Rust
+#thread_local = "1.1.8" # <-- Thread-local storage for SIMD
+
+[profile.release]
+lto = true # <-- Enable Link-Time Optimization
+codegen-units = 1 # <-- Single compilation unit for better optimization
+opt-level = 3 # <-- Full optimization for speed
