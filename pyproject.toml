@@ -24,9 +24,6 @@ dependencies = []
 requires = ["maturin>=1.8,<2.0"]
 build-backend = "maturin"
 
-#[tool.setuptools]
-#package-dir = {"" = "src"}
-
 [tool.maturin]
 python-source = "src"
 manifest-path = "symrank-core/Cargo.toml"
@@ -37,5 +34,28 @@ bindings = "pyo3" # <-- explicitly state to maturin that it's a PyO3 project
 dev = [
     "maturin >=1.8.3",
     "pytest >=8.3.5",
+    "ruff >=0.11.10",
+    "mypy >=1.15.0",
+]
+
+benchmarks = [
     "scikit-learn >=1.6.1",
-    ]
+    "numpy >=2.2.5",
+]
+
+
+[project.urls]
+"Repository" = "https://github.com/analyticsinmotion/symrank"
+"Bug Tracker" = "https://github.com/analyticsinmotion/symrank/issues"
+
+[tool.ruff]
+line-length = 88                     # <-- Max line length, consistent with Black
+target-version = "py313"             # <-- Target Python 3.13
+extend-include = ["benchmarks"]      # <-- Also lint the benchmarks directory
+extend-exclude = ["symrank-core"]       # <-- Exclude the Rust source code directory
+
+[tool.mypy]
+python_version = "3.13"              # <-- Target Python 3.13
+ignore_missing_imports = true        # <-- Suppress errors for 3rd-party packages without stubs
+strict = true                        # <-- Enable strict mode for safer code
+exclude = "^(tests|benchmarks)/"     # <-- Exclude tests and benchmarks from type checking
