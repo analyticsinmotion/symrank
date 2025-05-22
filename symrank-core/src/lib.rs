@@ -1,10 +1,7 @@
 /// SymRank core library
 /// Binds Rust functions to Python module using PyO3.
 
-//mod cosine;
 pub mod cosine;
-// pub mod heap;
-// pub mod sort;
 mod diagnostics;
 
 use pyo3::prelude::*;
