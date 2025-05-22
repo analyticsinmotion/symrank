@@ -92,9 +92,9 @@ compare(
 | `query_vector`     | List[float] or np.ndarray                      | _required_  | Vector to search with |
 | `candidate_vectors`| List[Tuple[str, List[float] or np.ndarray]]      | _required_  | (id, vector) pairs to compare against |
 | `method`           | str                                              | "cosine"  | Similarity method (E.g. "cosine") |
-| `top_k`            | int                                              | '5'         | Number of results to return |
-| `vector_size`      | int                                              | '1536'      | Dimensionality of all vectors |
-| `batch_size`       | int or None                                      | 'None'      | Optional batch size to reduce memory use |
+| `top_k`            | int                                              | 5         | Number of results to return |
+| `vector_size`      | int                                              | 1536      | Dimensionality of all vectors |
+| `batch_size`       | int or None                                      | None      | Optional batch size to reduce memory use |
 
 
 ### Returns
