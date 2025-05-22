@@ -61,7 +61,7 @@ candidates = [
     ("doc_3", [0.0, 0.0, 0.0, 1.0]),
 ]
 
-results = sr.compare(query, candidates, top_k=2)
+results = sr.compare(query, candidates, top_k=2, vector_size=4)
 print(results)
 ```
 
