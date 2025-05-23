@@ -1,0 +1,161 @@
+# ci-check.yml
+#
+# GitHub Actions workflow to validate wheel and sdist builds across platforms and Python versions.
+# This workflow matches ci.yml but skips the PyPI upload step.
+# It is intended to verify that builds complete successfully before releasing.
+# This workflow runs manually (via workflow_dispatch) and builds wheels for Linux, Windows, and macOS.
+# It DOES NOT upload to PyPI — it only builds and uploads artifacts for inspection/testing.
+#
+# Recommended for use prior to release workflows (e.g. CI.yml).
+
+name: Build Check (no PyPI upload)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+
+  # ------------------------------------------------------------
+  # Build wheels for Linux
+  # ------------------------------------------------------------
+  linux:
+    name: Build Linux Wheels
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        platform:
+          - runner: ubuntu-latest
+            target: x86_64
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --out dist --interpreter python
+          manylinux: auto
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-${{ matrix.platform.target }}-py${{ matrix.python-version }}
+          path: dist
+
+  # ------------------------------------------------------------
+  # Build wheels for Windows
+  # ------------------------------------------------------------         
+  windows:
+    name: Build Windows Wheels
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        platform:
+          - runner: windows-latest
+            target: x64
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.platform.target }}
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --out dist --interpreter python
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-windows-${{ matrix.platform.target }}-py${{ matrix.python-version }}
+          path: dist
+  
+  # ------------------------------------------------------------
+  # Build wheels for macOS
+  # ------------------------------------------------------------
+  macos:
+    name: Build macOS Wheels
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --out dist --interpreter python
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-${{ matrix.python-version }}-py${{ matrix.python-version }}
+          path: dist
+
+  # ------------------------------------------------------------
+  # Build source distribution (sdist)
+  # ------------------------------------------------------------
+  sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-sdist
+          path: dist
+
+  # ------------------------------------------------------------
+  # Release: Publish to PyPI with OIDC-based Trusted Publisher
+  # ------------------------------------------------------------
+  release:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: [linux, windows, macos, sdist]
+    environment: pypi  # Trusted publishing environment
+    permissions:
+      # Use to sign the release artifacts
+      id-token: write
+      # Used to upload release artifacts
+      contents: write
+      # Used to generate artifact attestation
+      attestations: write
+    steps:
+      - name: Download and merge all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          #subject-path: 'wheels-*/*'
+          subject-path: 'dist/*'
+
+      - name: List and verify all artifacts
+        run: |
+          echo "Distributions in dist/"
+          find dist -type f
+          echo "Inspecting file types:"
+          file dist/* 2>/dev/null || true
+
+    #   - name: Publish to PyPI
+    #     uses: pypa/gh-action-pypi-publish@release/v1
+    #     with:
+    #       packages-dir: dist
+
