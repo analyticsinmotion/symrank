@@ -8,7 +8,7 @@
 #
 # Recommended for use prior to release workflows (e.g. CI.yml).
 
-name: Build Check (no PyPI upload)
+name: CI Check (no PyPI upload)
 
 on:
   workflow_dispatch:
