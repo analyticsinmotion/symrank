@@ -38,13 +38,13 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.platform.target }}
-          args: --release --out dist  --find-interpreter
+          #target: ${{ matrix.platform.target }}
+          args: --release --out dist --interpreter python
           manylinux: auto
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-linux-${{ matrix.platform.target }}-py${{ matrix.python-version }}
+          name: wheels-linux-${{ matrix.platform.runner }}-${{ matrix.python-version }}
           path: dist
 
   # ------------------------------------------------------------
@@ -68,12 +68,12 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.platform.target }}
-          args: --release --out dist  --find-interpreter
+          #target: ${{ matrix.platform.target }}
+          args: --release --out dist --interpreter python
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-windows-${{ matrix.platform.target }}-py${{ matrix.python-version }}
+          name: wheels-windows-${{ matrix.python-version }}
           path: dist
   
   # ------------------------------------------------------------
@@ -93,11 +93,11 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          args: --release --out dist  --find-interpreter
+          args: --release --out dist --interpreter python
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-macos-${{ matrix.python-version }}-py${{ matrix.python-version }}
+          name: wheels-macos-${{ matrix.python-version }}
           path: dist
 
   # ------------------------------------------------------------
@@ -141,11 +141,11 @@ jobs:
           path: dist
           merge-multiple: true
 
-    #   - name: Generate artifact attestation
-    #     uses: actions/attest-build-provenance@v2
-    #     with:
-    #       #subject-path: 'wheels-*/*'
-    #       subject-path: 'dist/*'
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          #subject-path: 'wheels-*/*'
+          subject-path: 'dist/*'
 
       - name: List and verify all artifacts
         run: |
