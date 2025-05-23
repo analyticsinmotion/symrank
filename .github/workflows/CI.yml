@@ -131,11 +131,23 @@ jobs:
       # Used to generate artifact attestation
       attestations: write
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download and merge all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: 'wheels-*/*'
+
+      - name: List and verify all artifacts
+        run: |
+          echo "Distributions in dist/"
+          find dist -type f
+          echo "Inspecting file types:"
+          file dist/* 2>/dev/null || true
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
