@@ -35,3 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Python compare() interface: simple, type-safe wrapper that allows direct vector comparison and batching from Python.
 - Utility functions for diagnostics (e.g., thread count, SIMD support) in the Rust backend.
 - Benchmarks comparing package performance to NumPy and scikit-learn cosine similarity implementations.
+
+### Fixed
+- Fixed CI workflow to correctly merge all built wheel and sdist artifacts into the `dist/` directory before publishing to PyPI, preventing missing distribution errors.
