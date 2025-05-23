@@ -23,6 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2025-05-23
+
+### Added
+- Added `ci-check.yml` GitHub Actions workflow to validate wheel and sdist builds for all supported platforms and Python versions without uploading to PyPI. This workflow helps ensure all artifacts are correct before release.
+
+### Fixed
+- Updated CI workflow to use `--interpreter python` in maturin build arguments, ensuring each job builds only for its matrix Python version and preventing wheel overwriting during artifact merging.
+- Fixed CI workflow for Linux wheels to use the correct Python interpreter path inside the manylinux container, ensuring successful builds for all targeted Python versions.
+
+---
+
 ## [0.1.0] - 2025-05-23
 
 ### Added
