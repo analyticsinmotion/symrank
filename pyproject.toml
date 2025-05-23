@@ -1,6 +1,6 @@
 [project]
 name = "symrank"
-version = "0.1.0"
+version = "0.1.1"
 description = "High-performance cosine similarity ranking for Retrieval-Augmented Generation (RAG) pipelines, vector search, and information retrieval, with a Python interface powered by a Rust backend."
 readme = "README.md"
 authors = [
