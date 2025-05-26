@@ -9,11 +9,13 @@ def cosine_similarity(
     batch_size: Optional[int] = None,
 ) -> List[dict]:
     """
-    Compute cosine similarity between a query vector and a list of candidate vectors. Return the top-k most similar. 
+    Compute cosine similarity between a query vector and a list of candidate vectors. Return the top-k most similar.
+
+    This function uses a high-performance Rust implementation (SIMD-accelerated) under the hood.
 
     Parameters:
         query_vector (Sequence[float] or np.ndarray): The query vector.
-        candidate_vectors (Sequence[Tuple[str, Sequence[float] or np.ndarray]]): 
+        candidate_vectors (Sequence[Tuple[str, Sequence[float] or np.ndarray]]):
             A list of (doc_id, vector) pairs to compare against.
         k (int): Number of top results to return.
         batch_size (int or None): Optional batch size to process candidates in chunks.
@@ -21,10 +23,12 @@ def cosine_similarity(
     Returns:
         List[dict]: A list of top-k results with "id" and "score" keys, sorted by descending similarity.
     """
-
+    if not candidate_vectors:
+        raise ValueError("candidate_vectors must not be empty")
+    
     query_vector = _prepare_vector(query_vector)
     vector_size = query_vector.shape[0]
-    query_vector = np.ascontiguousarray(query_vector, dtype=np.float32)  # <-- Ensure contiguous ONCE
+    query_vector = np.ascontiguousarray(query_vector, dtype=np.float32)
 
     ids, vectors = zip(*candidate_vectors)
     ids = list(ids)
@@ -37,31 +41,29 @@ def cosine_similarity(
     batch_size = batch_size or total
     all_results = []
 
-    # Pre-allocate the batch buffer ONCE
+    # Pre-allocate the batch buffer ONCE for efficiency
     batch_vectors_np = np.empty((batch_size, vector_size), dtype=np.float32)
 
     for start_idx in range(0, total, batch_size):
-        batch_vectors = vectors[start_idx:start_idx + batch_size]
-        batch_ids = ids[start_idx:start_idx + batch_size]
+        end_idx = min(start_idx + batch_size, total)
+        batch_vectors = vectors[start_idx:end_idx]
+        batch_ids = ids[start_idx:end_idx]
 
         # Fill the pre-allocated buffer
         batch_vectors_np[:len(batch_vectors)] = batch_vectors
 
-        if batch_vectors_np.shape[1] != vector_size:
-            raise ValueError(f"Candidate vectors must have size {vector_size}. Got {batch_vectors_np.shape[1]}")
-
-        # Call Rust: only pass k (no use_heap)
+        # Call Rust extension (returns top-k for this batch, sorted)
         batch_topk = _cosine_similarity(
             query_vector,
-            batch_vectors_np[:len(batch_vectors)],  # Only pass the filled portion
+            batch_vectors_np[:len(batch_vectors)],
             k,
         )
 
-        # Map indices to IDs here
+        # Map indices to IDs for this batch
         all_results.extend([(batch_ids[i], score) for i, score in batch_topk])
 
+    # Final top-k selection across all batches
     all_results = sorted(all_results, key=lambda x: x[1], reverse=True)[:k]
-
     return [{"id": id_, "score": score} for (id_, score) in all_results]
 
 
@@ -74,8 +76,6 @@ def _prepare_vector(vec: Union[Sequence[float], np.ndarray]) -> np.ndarray:
             vec = vec.astype(np.float32)
     else:
         raise TypeError("Vector must be a list, tuple, or np.ndarray")
-
     if vec.ndim != 1:
         raise ValueError(f"Vector must be 1D. Got shape {vec.shape}")
-
     return vec
