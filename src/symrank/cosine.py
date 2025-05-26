@@ -2,22 +2,19 @@ import numpy as np
 from typing import List, Sequence, Tuple, Union, Optional
 from .symrank import cosine_similarity
 
-def compare(
+def cosine(
     query_vector: Union[Sequence[float], np.ndarray],
     candidate_vectors: Sequence[Tuple[str, Union[Sequence[float], np.ndarray]]],
-    method: str = "cosine",
     k: int = 5,
     batch_size: Optional[int] = None,
 ) -> List[dict]:
     """
-    Compare a query vector to a list of candidate vectors and return the top-k most similar. 
-    All vectors must have the same dimensionality, which is inferred from the query vector.
+    Compute cosine similarity between a query vector and a list of candidate vectors. Return the top-k most similar. 
 
     Parameters:
         query_vector (Sequence[float] or np.ndarray): The query vector.
         candidate_vectors (Sequence[Tuple[str, Sequence[float] or np.ndarray]]): 
             A list of (doc_id, vector) pairs to compare against.
-        method (str): Similarity method to use. Currently only "cosine" is supported.
         k (int): Number of top results to return.
         batch_size (int or None): Optional batch size to process candidates in chunks.
 
@@ -25,12 +22,8 @@ def compare(
         List[dict]: A list of top-k results with "id" and "score" keys, sorted by descending similarity.
     """
 
-    if method != "cosine":
-        raise ValueError(f"Only 'cosine' method is currently supported. Got: {method}")
-
     query_vector = _prepare_vector(query_vector)
     vector_size = query_vector.shape[0]
-
     query_vector = np.ascontiguousarray(query_vector, dtype=np.float32)  # <-- Ensure contiguous ONCE
 
     ids, vectors = zip(*candidate_vectors)
@@ -84,8 +77,5 @@ def _prepare_vector(vec: Union[Sequence[float], np.ndarray]) -> np.ndarray:
 
     if vec.ndim != 1:
         raise ValueError(f"Vector must be 1D. Got shape {vec.shape}")
-
-    # if vec.shape[0] != expected_size:
-    #     raise ValueError(f"Vector size mismatch: expected {expected_size}, got {vec.shape[0]}")
 
     return vec
