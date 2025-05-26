@@ -1,8 +1,8 @@
 import numpy as np
 from typing import List, Sequence, Tuple, Union, Optional
-from .symrank import cosine_similarity
+from .symrank import cosine_similarity as _cosine_similarity
 
-def cosine(
+def cosine_similarity(
     query_vector: Union[Sequence[float], np.ndarray],
     candidate_vectors: Sequence[Tuple[str, Union[Sequence[float], np.ndarray]]],
     k: int = 5,
@@ -51,7 +51,7 @@ def cosine(
             raise ValueError(f"Candidate vectors must have size {vector_size}. Got {batch_vectors_np.shape[1]}")
 
         # Call Rust: only pass k (no use_heap)
-        batch_topk = cosine_similarity(
+        batch_topk = _cosine_similarity(
             query_vector,
             batch_vectors_np[:len(batch_vectors)],  # Only pass the filled portion
             k,

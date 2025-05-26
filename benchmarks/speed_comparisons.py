@@ -1,7 +1,7 @@
 import numpy as np
 import timeit
 from typing import Optional
-from symrank import cosine
+from symrank import cosine_similarity
 from sklearn.metrics.pairwise import cosine_similarity as skl_cosine
 
 
@@ -22,7 +22,7 @@ def benchmark_numpy_topk(query: np.ndarray, candidates: np.ndarray, k: int):
 
 def benchmark_symrank_topk(query: np.ndarray, candidates: np.ndarray, k: int, batch_size: Optional[int] = None):
     vecs = [(f"doc_{i}", v) for i, v in enumerate(candidates)]
-    return cosine(query, vecs, k=k, batch_size=batch_size)
+    return cosine_similarity(query, vecs, k=k, batch_size=batch_size)
 
 
 def run():
