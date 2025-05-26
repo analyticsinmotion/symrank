@@ -20,9 +20,9 @@ def benchmark_numpy_topk(query: np.ndarray, candidates: np.ndarray, k: int):
     return [(f"doc_{i}", sims[i]) for i in topk_idx]
 
 
-def benchmark_symrank_topk(query: np.ndarray, candidates: np.ndarray, k: int, vector_size: int, batch_size: Optional[int] = None):
+def benchmark_symrank_topk(query: np.ndarray, candidates: np.ndarray, k: int, batch_size: Optional[int] = None):
     vecs = [(f"doc_{i}", v) for i, v in enumerate(candidates)]
-    return compare(query, vecs, k=k, vector_size=vector_size, batch_size=batch_size)
+    return compare(query, vecs, k=k, batch_size=batch_size)
 
 
 def run():
@@ -36,7 +36,7 @@ def run():
     candidates = np.random.rand(n, dim).astype(np.float32)
 
     benchmarks = [
-        ("SymRank_TopK", lambda: benchmark_symrank_topk(query, candidates, k, dim, batch_size)),
+        ("SymRank_TopK", lambda: benchmark_symrank_topk(query, candidates, k, batch_size)),
         ("sklearn_TopK", lambda: benchmark_sklearn_topk(query, candidates, k)),
         ("NumPy_TopK", lambda: benchmark_numpy_topk(query, candidates, k)),
     ]

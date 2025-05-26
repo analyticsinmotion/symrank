@@ -7,11 +7,11 @@ def compare(
     candidate_vectors: Sequence[Tuple[str, Union[Sequence[float], np.ndarray]]],
     method: str = "cosine",
     k: int = 5,
-    vector_size: int = 1536,
     batch_size: Optional[int] = None,
 ) -> List[dict]:
     """
-    Compare a query vector to a list of candidate vectors and return the top-k most similar.
+    Compare a query vector to a list of candidate vectors and return the top-k most similar. 
+    All vectors must have the same dimensionality, which is inferred from the query vector.
 
     Parameters:
         query_vector (Sequence[float] or np.ndarray): The query vector.
@@ -19,7 +19,6 @@ def compare(
             A list of (doc_id, vector) pairs to compare against.
         method (str): Similarity method to use. Currently only "cosine" is supported.
         k (int): Number of top results to return.
-        vector_size (int): Expected dimensionality of all vectors (default: 1536).
         batch_size (int or None): Optional batch size to process candidates in chunks.
 
     Returns:
@@ -29,12 +28,17 @@ def compare(
     if method != "cosine":
         raise ValueError(f"Only 'cosine' method is currently supported. Got: {method}")
 
-    query_vector = _prepare_vector(query_vector, vector_size)
+    query_vector = _prepare_vector(query_vector)
+    vector_size = query_vector.shape[0]
+
     query_vector = np.ascontiguousarray(query_vector, dtype=np.float32)  # <-- Ensure contiguous ONCE
 
     ids, vectors = zip(*candidate_vectors)
     ids = list(ids)
-    vectors = [_prepare_vector(vec, vector_size) for vec in vectors]
+    vectors = [_prepare_vector(vec) for vec in vectors]
+    for i, vec in enumerate(vectors):
+        if vec.shape[0] != vector_size:
+            raise ValueError(f"Candidate vector at index {i} has dimension {vec.shape[0]}, expected {vector_size}")
 
     total = len(vectors)
     batch_size = batch_size or total
@@ -68,8 +72,8 @@ def compare(
     return [{"id": id_, "score": score} for (id_, score) in all_results]
 
 
-def _prepare_vector(vec: Union[Sequence[float], np.ndarray], expected_size: int) -> np.ndarray:
-    """Ensure the input vector is a 1D numpy array of expected size and type (float32)."""
+def _prepare_vector(vec: Union[Sequence[float], np.ndarray]) -> np.ndarray:
+    """Ensure the input vector is a 1D numpy array of type float32."""
     if isinstance(vec, (list, tuple)):
         vec = np.array(vec, dtype=np.float32)
     elif isinstance(vec, np.ndarray):
@@ -81,7 +85,7 @@ def _prepare_vector(vec: Union[Sequence[float], np.ndarray], expected_size: int)
     if vec.ndim != 1:
         raise ValueError(f"Vector must be 1D. Got shape {vec.shape}")
 
-    if vec.shape[0] != expected_size:
-        raise ValueError(f"Vector size mismatch: expected {expected_size}, got {vec.shape[0]}")
+    # if vec.shape[0] != expected_size:
+    #     raise ValueError(f"Vector size mismatch: expected {expected_size}, got {vec.shape[0]}")
 
     return vec

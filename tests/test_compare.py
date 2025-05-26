@@ -56,7 +56,7 @@ def test_mismatched_vector_size():
     ]
 
     with pytest.raises(ValueError):
-        compare(query_vector, candidate_vectors, vector_size=1536)
+        compare(query_vector, candidate_vectors)
 
 # ------------------------------------------------------------
 # Test 5
