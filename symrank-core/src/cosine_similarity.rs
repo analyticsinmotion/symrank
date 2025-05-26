@@ -44,6 +44,7 @@ pub fn cosine_similarity(
 
     //let query_norm = query.iter().map(|x| x * x).sum::<f32>().sqrt();
     let query_norm = fused_norm(query);
+    let inv_query_norm = 1.0 / query_norm; // Precompute reciprocal
 
     // Adaptive serial/parallel scoring
     let n_refs = references.shape()[0];
@@ -64,7 +65,9 @@ pub fn cosine_similarity(
             .map(|(i, ref_vec)| {
                 let ref_slice = ref_vec.as_slice().unwrap();
                 let (dot, norm2) = fused_dot_and_norm(query, ref_slice);
-                let sim = dot / (query_norm * norm2);
+                // let sim = dot / (query_norm * norm2);
+                let inv_norm2 = 1.0 / norm2;
+                let sim = dot * inv_query_norm * inv_norm2; // Use multiplication instead of division
                 (i, sim)
             })
             .collect()
@@ -77,7 +80,9 @@ pub fn cosine_similarity(
             .map(|(i, ref_vec)| {
                 let ref_slice = ref_vec.as_slice().unwrap();
                 let (dot, norm2) = fused_dot_and_norm(query, ref_slice);
-                let sim = dot / (query_norm * norm2);
+                // let sim = dot / (query_norm * norm2);
+                let inv_norm2 = 1.0 / norm2;
+                let sim = dot * inv_query_norm * inv_norm2; // Use multiplication instead of division
                 (i, sim)
             })
             .collect()
