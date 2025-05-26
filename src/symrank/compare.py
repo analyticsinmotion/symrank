@@ -6,7 +6,7 @@ def compare(
     query_vector: Union[Sequence[float], np.ndarray],
     candidate_vectors: Sequence[Tuple[str, Union[Sequence[float], np.ndarray]]],
     method: str = "cosine",
-    top_k: int = 5,
+    k: int = 5,
     vector_size: int = 1536,
     batch_size: Optional[int] = None,
 ) -> List[dict]:
@@ -18,7 +18,7 @@ def compare(
         candidate_vectors (Sequence[Tuple[str, Sequence[float] or np.ndarray]]): 
             A list of (doc_id, vector) pairs to compare against.
         method (str): Similarity method to use. Currently only "cosine" is supported.
-        top_k (int): Number of top results to return.
+        k (int): Number of top results to return.
         vector_size (int): Expected dimensionality of all vectors (default: 1536).
         batch_size (int or None): Optional batch size to process candidates in chunks.
 
@@ -53,17 +53,17 @@ def compare(
         if batch_vectors_np.shape[1] != vector_size:
             raise ValueError(f"Candidate vectors must have size {vector_size}. Got {batch_vectors_np.shape[1]}")
 
-        # Call Rust: only pass top_k (no use_heap)
+        # Call Rust: only pass k (no use_heap)
         batch_topk = cosine_similarity(
             query_vector,
             batch_vectors_np[:len(batch_vectors)],  # Only pass the filled portion
-            top_k,
+            k,
         )
 
         # Map indices to IDs here
         all_results.extend([(batch_ids[i], score) for i, score in batch_topk])
 
-    all_results = sorted(all_results, key=lambda x: x[1], reverse=True)[:top_k]
+    all_results = sorted(all_results, key=lambda x: x[1], reverse=True)[:k]
 
     return [{"id": id_, "score": score} for (id_, score) in all_results]
 
