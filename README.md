@@ -57,7 +57,7 @@ You can install SymRank with 'uv' or alternatively using 'pip'.
 uv pip install symrank
 ```
 
-### Using pip:
+### Alternatively (using pip):
 ```bash
 pip install symrank
 ```
@@ -78,7 +78,7 @@ candidates = [
     ("doc_3", [0.0, 0.0, 0.0, 1.0]),
 ]
 
-results = sr.compare(query, candidates, top_k=2, vector_size=4)
+results = sr.cosine_similarity(query, candidates, k=2)
 print(results)
 ```
 
@@ -89,28 +89,24 @@ print(results)
 
 <br/>
 
-## 🧩 API: compare(...)
+## 🧩 API: cosine_similarity(...)
 
 ```python
-compare(
+cosine_similarity(
     query_vector,              # List[float] or np.ndarray
     candidate_vectors,         # List[Tuple[str, List[float] or np.ndarray]]
-    method="cosine",           # Currently only "cosine" is supported
-    top_k=5,                   # Number of top results to return
-    vector_size=1536,          # Embedding dimension (default: OpenAI's)
+    k=5,                       # Number of top results to return
     batch_size=None,           # Optional: split into batches for large sets
 )
 ```
 
-### 'compare(...)' Parameters
+### 'cosine_similarity(...)' Parameters
 
 | Parameter         | Type                                               | Default     | Description |
 |-------------------|----------------------------------------------------|-------------|-------------|
 | `query_vector`     | List[float] or np.ndarray                      | _required_  | Vector to search with |
 | `candidate_vectors`| List[Tuple[str, List[float] or np.ndarray]]      | _required_  | (id, vector) pairs to compare against |
-| `method`           | str                                              | "cosine"  | Similarity method (E.g. "cosine") |
-| `top_k`            | int                                              | 5         | Number of results to return |
-| `vector_size`      | int                                              | 1536      | Dimensionality of all vectors |
+| `k`                | int                                              | 5         | Number of results to return |
 | `batch_size`       | int or None                                      | None      | Optional batch size to reduce memory use |
 
 
@@ -131,7 +127,7 @@ List of dictionaries with `id` and `score` (cosine similarity):
 
 *Python Code:*
 ```python
-from symrank import compare
+from symrank import cosine_similarity
 ```
 
 ### Examples:

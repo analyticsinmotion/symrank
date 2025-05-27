@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from symrank import compare
+from symrank import cosine_similarity
 
 # ------------------------------------------------------------
 # Test 1
@@ -13,7 +13,7 @@ def test_compare_default_threshold():
         for i in range(300)
     ]
 
-    top_results = compare(query_vector, candidate_vectors)
+    top_results = cosine_similarity(query_vector, candidate_vectors)
     assert len(top_results) == 5
     assert all("id" in result and "score" in result for result in top_results)
 
@@ -28,7 +28,7 @@ def test_compare_batching_large():
         for i in range(6000)
     ]
 
-    top_results = compare(query_vector, candidate_vectors, batch_size=3000)
+    top_results = cosine_similarity(query_vector, candidate_vectors, batch_size=3000)
     assert len(top_results) == 5
     assert all("id" in result and "score" in result for result in top_results)
 
@@ -43,7 +43,7 @@ def test_invalid_vector_shape():
     ]
 
     with pytest.raises(ValueError):
-        compare(query_vector, candidate_vectors)
+        cosine_similarity(query_vector, candidate_vectors)
 
 # ------------------------------------------------------------
 # Test 4
@@ -56,7 +56,7 @@ def test_mismatched_vector_size():
     ]
 
     with pytest.raises(ValueError):
-        compare(query_vector, candidate_vectors, vector_size=1536)
+        cosine_similarity(query_vector, candidate_vectors)
 
 # ------------------------------------------------------------
 # Test 5
@@ -69,7 +69,7 @@ def test_invalid_query_vector_type():
     ]
 
     with pytest.raises(TypeError):
-        compare(query_vector, candidate_vectors) # type: ignore
+        cosine_similarity(query_vector, candidate_vectors) # type: ignore
 
 # ------------------------------------------------------------
 # Entry point for running this file standalone

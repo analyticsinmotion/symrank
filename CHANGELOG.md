@@ -23,6 +23,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.2] - 2025-05-26
+
+### Changed
+- Changed all function arguments, variable names, and docstrings from `top_k` to `k` for clarity and consistency.
+- `compare()` no longer requires the `vector_size` parameter. Vector dimensionality is now inferred from the `query_vector`.
+- Candidate vectors are automatically validated against the inferred size.
+- Removed the method parameter from the main similarity function (was previously intended for future extensibility).
+- Renamed the main function from compare to cosine for clarity.
+- Updated all internal imports, tests, and benchmarks to use cosine.
+- API: The main similarity function is now cosine_similarity (was previously compare/cosine).
+- File Structure: Renamed cosine.py to cosine_similarity.py for clarity.
+- Tests: All tests now use cosine_similarity as the entry point.
+- Public Interface: Only cosine_similarity is exposed in the package’s public API.
+- Improved Rust cosine similarity kernel by moving the division for query_norm out of the hot loop. Now precomputes the reciprocal of query_norm and uses multiplication inside the scoring loop, reducing the number of divisions and improving throughput for large candidate sets.
+- Improved Python wrapper for `cosine_similarity` that adds explicit check for empty `candidate_vectors` to provide a clear error message. 
+- Now checks that all candidate vectors have the correct dimension.
+- Pre-allocates the batch buffer for better performance during batch processing.
+- Refactored `speed_comparisons_batch.py` benchmark script to standardized batch processing logic across all benchmark functions
+
+### Fixed
+- Improved API clarity and reduced confusion by making the cosine similarity function explicit.
+
+### Removed
+- The `vector_size` argument from `compare()` and `_prepare_vector()`. This change simplifies the API and reduces the risk of mismatched vector sizes.
+- The method parameter from the Python API.
+
+---
+
 ## [0.1.1] - 2025-05-23
 
 ### Added
