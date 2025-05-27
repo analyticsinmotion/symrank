@@ -78,7 +78,7 @@ candidates = [
     ("doc_3", [0.0, 0.0, 0.0, 1.0]),
 ]
 
-results = sr.cosine(query, candidates, k=2)
+results = sr.cosine_similarity(query, candidates, k=2)
 print(results)
 ```
 
@@ -89,10 +89,10 @@ print(results)
 
 <br/>
 
-## 🧩 API: cosine(...)
+## 🧩 API: cosine_similarity(...)
 
 ```python
-cosine(
+cosine_similarity(
     query_vector,              # List[float] or np.ndarray
     candidate_vectors,         # List[Tuple[str, List[float] or np.ndarray]]
     k=5,                       # Number of top results to return
@@ -100,7 +100,7 @@ cosine(
 )
 ```
 
-### 'cosine(...)' Parameters
+### 'cosine_similarity(...)' Parameters
 
 | Parameter         | Type                                               | Default     | Description |
 |-------------------|----------------------------------------------------|-------------|-------------|
@@ -127,7 +127,7 @@ List of dictionaries with `id` and `score` (cosine similarity):
 
 *Python Code:*
 ```python
-from symrank import cosine
+from symrank import cosine_similarity
 ```
 
 ### Examples:
