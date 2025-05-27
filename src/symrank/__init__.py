@@ -1,4 +1,4 @@
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 from .cosine_similarity import cosine_similarity
 # from .symrank import cosine_similarity
 
