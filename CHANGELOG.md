@@ -23,6 +23,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.3] - 2025-05-28 
+
+### Added
+- `test_cosine_similarity_batch.py` with new pytest cases covering: batch size greater than the number of candidates, zero batch size treated as default (no batching), batch size of one (per‐vector processing), negative batch size error condition.
+- New benchmark script `results_comparisons.py` that compares top-k cosine similarity results and execution times between SymRank, scikit-learn, and NumPy implementations. The script prints normalized timing (ms) and similarity scores for each method, aiding in both performance and correctness validation.
+- New benchmark scripts:
+  - `speed_comparison.py`: Compares speed of SymRank, scikit-learn, and NumPy cosine similarity implementations on the same dataset.
+  - `speed_standard_vs_batch.py`: Benchmarks and compares standard vs. batch SymRank implementations across various dataset and batch sizes.
+  - `speed_comparisons_with_batch.py`: Benchmarks batch-mode performance of SymRank, scikit-learn, and NumPy, including global top-k selection.
+- All scripts output timing results in milliseconds, supporting robust performance analysis and regression testing.
+- New module `cosine_similarity_batch.py` providing `cosine_similarity_batch`, a batching-optimized cosine similarity function. Supports processing large candidate sets in batches with a pre-allocated buffer for efficiency. Recommended for memory-constrained or large-scale similarity search scenarios.
+- Expanded unit tests for `cosine_similarity`:
+  - Tests for invalid input shapes, mismatched vector sizes, and empty candidate lists.
+  - Checks for k=0, k greater than candidate count, identical vectors, integer sequence input, and negative/mixed values.
+  - Improved assertions for output structure and correctness.
+
+### Changed
+- Updated `Cargo.toml` to optimize Rust release builds:
+  - Enabled link-time optimization (`lto = true`), set `codegen-units = 1`, and `opt-level = 3` for improved runtime speed.
+  - Clarified crate and module naming in `[lib]` section.
+  - Ensured `ndarray` uses Rayon for parallelism and `wide` for SIMD acceleration.
+  - Updated dependency versions for improved stability and performance.
+- Updated `__init__.py` to expose both `cosine_similarity` and `cosine_similarity_batch` in the public API.
+- Refactored Rust core (`lib.rs`)
+- Improved input validation and error handling for candidate vector shapes in `cosine_similarity.py`
+
+### Removed
+- Removed the following legacy benchmark scripts (replaced by new, improved benchmarking suite):
+  - `benchmark_compare_vs_numpy.py`
+  - `benchmark_compare_vs_sklearn.py`
+  - `benchmark_symrank.py`
+  - `speed_comparisons_batch.py`
+  - `speed_comparisons.py`
+  - `threadpool_info.py`
+- Deprecated diagnostics utilities for checking Rayon thread count, environment variables (e.g., OMP_NUM_THREADS, OPENBLAS_NUM_THREADS), and SIMD support have been removed from the Rust core. - This cleanup reduces maintenance burden and eliminates unused code paths.
+
+---
+
 ## [0.1.2] - 2025-05-26
 
 ### Changed
