@@ -1,5 +1,5 @@
 import numpy as np
-from symrank import compare
+from symrank import cosine_similarity
 
 def main():
     # Generate a random query vector
@@ -13,7 +13,7 @@ def main():
 
     # Call the compare function
     print("Calling compare function...")
-    top_results = compare(query_vector, candidate_vectors)
+    top_results = cosine_similarity(query_vector, candidate_vectors)
 
     # Print the results
     print("Top Results:")
