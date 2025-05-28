@@ -70,8 +70,10 @@ pip install symrank
 
 ```python
 import symrank as sr
+#import numpy as np
 
-query = [0.1, 0.2, 0.3, 0.4]  # or np.array([...], dtype=np.float32)
+query = [0.1, 0.2, 0.3, 0.4]  
+#query = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float32)
 candidates = [
     ("doc_1", [0.1, 0.2, 0.3, 0.5]),
     ("doc_2", [0.9, 0.1, 0.2, 0.1]),
@@ -84,7 +86,7 @@ print(results)
 
 *Output*
 ```python
-[{'id': 'doc_1', 'score': 0.9987}, {'id': 'doc_3', 'score': 0.8912}]
+[{'id': 'doc_1', 'score': 0.9939991235733032}, {'id': 'doc_3', 'score': 0.7302967309951782}]
 ```
 
 <br/>
@@ -96,7 +98,6 @@ cosine_similarity(
     query_vector,              # List[float] or np.ndarray
     candidate_vectors,         # List[Tuple[str, List[float] or np.ndarray]]
     k=5,                       # Number of top results to return
-    batch_size=None,           # Optional: split into batches for large sets
 )
 ```
 
@@ -107,7 +108,6 @@ cosine_similarity(
 | `query_vector`     | List[float] or np.ndarray                      | _required_  | Vector to search with |
 | `candidate_vectors`| List[Tuple[str, List[float] or np.ndarray]]      | _required_  | (id, vector) pairs to compare against |
 | `k`                | int                                              | 5         | Number of results to return |
-| `batch_size`       | int or None                                      | None      | Optional batch size to reduce memory use |
 
 
 ### Returns
