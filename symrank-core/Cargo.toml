@@ -1,6 +1,6 @@
 [package]
 name = "symrank" # <-- Rust crate name
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 resolver = "2" # <-- Avoid compiling unnecessary features from dependencies.
 
@@ -17,7 +17,6 @@ pyo3 = { version = "0.25.0", features = ["extension-module"] }
 rayon = "1.10.0"
 rand = "0.9.1" 
 wide = "0.7.32" # <-- SIMD support for Rust
-#thread_local = "1.1.8" # <-- Thread-local storage for SIMD
 
 [profile.release]
 lto = true # <-- Enable Link-Time Optimization

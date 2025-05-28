@@ -1,39 +1,39 @@
 import numpy as np
 import timeit
-from symrank import compare
+from symrank import cosine_similarity
 from sklearn.metrics.pairwise import cosine_similarity as skl_cosine
 
-def benchmark_sklearn_topk(query: np.ndarray, candidates: np.ndarray, top_k: int):
+def benchmark_sklearn(query: np.ndarray, candidates: np.ndarray, k: int):
     sims = skl_cosine(query.reshape(1, -1), candidates)[0]
-    topk_idx = np.argsort(sims)[-top_k:][::-1]
+    topk_idx = np.argsort(sims)[-k:][::-1]
     return [sims[i] for i in topk_idx]
 
-def benchmark_numpy_topk(query: np.ndarray, candidates: np.ndarray, top_k: int):
+def benchmark_numpy(query: np.ndarray, candidates: np.ndarray, k: int):
     dot = candidates @ query
     norm_q = np.linalg.norm(query)
     norm_c = np.linalg.norm(candidates, axis=1)
     sims = dot / (norm_q * norm_c)
-    topk_idx = np.argsort(sims)[-top_k:][::-1]
+    topk_idx = np.argsort(sims)[-k:][::-1]
     return [sims[i] for i in topk_idx]
 
-def benchmark_symrank_topk(query: np.ndarray, candidates: np.ndarray, top_k: int):
+def benchmark_symrank(query: np.ndarray, candidates: np.ndarray, k: int):
     vecs = [(f"doc_{i}", v) for i, v in enumerate(candidates)]
-    results = compare(query, vecs, top_k=top_k)
+    results = cosine_similarity(query, vecs, k=k)
     return [r["score"] for r in results]
 
 def run():
     np.random.seed(42)
     dim = 1536
     n = 1000
-    top_k = 5
+    k = 5
 
     query = np.random.rand(dim).astype(np.float32)
     candidates = np.random.rand(n, dim).astype(np.float32)
 
     benchmarks = [
-        ("SymRank_TopK", lambda: benchmark_symrank_topk(query, candidates, top_k)),
-        ("sklearn_TopK", lambda: benchmark_sklearn_topk(query, candidates, top_k)),
-        ("NumPy_TopK", lambda: benchmark_numpy_topk(query, candidates, top_k)),
+        ("SymRank", lambda: benchmark_symrank(query, candidates, k)),
+        ("sklearn", lambda: benchmark_sklearn(query, candidates, k)),
+        ("NumPy", lambda: benchmark_numpy(query, candidates, k)),
     ]
 
     number = 3
