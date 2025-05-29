@@ -23,6 +23,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.4] - 2025-05-29
+
+### Added
+- Added support for python v3.10 to v3.13
+
+### Changed
+<!-- Add changed behavior here -->
+
+### Fixed
+<!-- Add bug fixes here -->
+
+### Removed
+<!-- Add removals/deprecations here -->
+
+---
+
 ## [0.1.3] - 2025-05-28 
 
 ### Added
