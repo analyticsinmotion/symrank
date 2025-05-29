@@ -27,15 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added support for python v3.10 to v3.13
-
-### Changed
-<!-- Add changed behavior here -->
-
-### Fixed
-<!-- Add bug fixes here -->
-
-### Removed
-<!-- Add removals/deprecations here -->
+- New benchmark scripts:
+  - `speed_comparisons_streaming_10k.py`: Streams and filters 100,001 records from a Hugging Face dataset, then benchmarks SymRank, NumPy, and scikit-learn cosine similarity on 10,000 real embeddings.
+  - `speed_comparisons_streaming_10k_batch.py`: Same data streaming and preparation, but benchmarks batch-mode performance for SymRank, NumPy, and scikit-learn.
+- Both scripts provide realistic, large-scale performance comparisons using real-world embedding data.
 
 ---
 
