@@ -105,9 +105,9 @@ cosine_similarity(
 
 | Parameter         | Type                                               | Default     | Description |
 |-------------------|----------------------------------------------------|-------------|-------------|
-| `query_vector`     | List[float] or np.ndarray                      | _required_  | Vector to search with |
-| `candidate_vectors`| List[Tuple[str, List[float] or np.ndarray]]      | _required_  | (id, vector) pairs to compare against |
-| `k`                | int                                              | 5         | Number of results to return |
+| `query_vector`     | list of float OR ndarray                          | _required_  | Vector to search with |
+| `candidate_vectors`| list of (str, vector) pairs  OR ndarray           | _required_  | (id, vector) pairs to compare against |
+| `k`                | int                                               | 5         | Number of top results to return |
 
 
 ### Returns
