@@ -6,7 +6,7 @@ pub mod cosine_similarity;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction; // Import wrap_pyfunction manually
 
-/// Initializes the Python module 'symrank_rust'
+/// Initializes the Python module 'symrank'
 #[pymodule]
 fn symrank(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Explicitly wrap and assign before adding
