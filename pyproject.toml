@@ -1,6 +1,6 @@
 [project]
 name = "symrank"
-version = "0.1.4"
+version = "0.1.5"
 description = "High-performance cosine similarity ranking for Retrieval-Augmented Generation (RAG) pipelines, vector search, and information retrieval, with a Python interface powered by a Rust backend."
 readme = "README.md"
 authors = [
@@ -12,6 +12,10 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
