@@ -1,6 +1,6 @@
 [package]
 name = "symrank" # <-- Rust crate name
-version = "0.1.5"
+version = "0.1.4"
 edition = "2021"
 resolver = "2" # <-- Avoid compiling unnecessary features from dependencies.
 
