@@ -23,6 +23,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.5] - 2025-06-02
+
+### Added
+- Unified `cosine_similarity` API: now automatically dispatches to SIMD or batch implementation based on `batch_size`.
+- New benchmark script for streaming real embedding datasets from Hugging Face Hub.
+- Benchmarks and compares cosine similarity performance across numpy, sklearn, and symrank APIs.
+- Enables large-scale, realistic evaluation of similarity search performance.
+
+### Changed
+- Updated README with clearer usage examples and parameter descriptions.
+
+### Fixed
+- Improved type hints and docstrings for all public APIs.
+- Cleaned up `__init__.py` to only expose the main APIs: `cosine_similarity`, `cosine_similarity_batch`, `cosine_similarity_simd`.
+- Consistent handling of batch_size=None and batch_size=0 (both now mean "no batching").
+
+### Removed
+<!-- Add removals/deprecations here -->
+
+---
+
 ## [0.1.4] - 2025-05-29
 
 ### Added
