@@ -3,7 +3,8 @@ import itertools
 import numpy as np
 import timeit
 
-from symrank import cosine_similarity_batch
+#from symrank import cosine_similarity_batch
+from symrank import cosine_similarity
 from sklearn.metrics.pairwise import cosine_similarity as skl_cosine
 
 # -----------------------------------------------------------------------------
@@ -56,7 +57,8 @@ k = 5
 batch_size = 256  # tune as needed
 
 def run_symrank_batch():
-    return cosine_similarity_batch(query, vecs, k=k, batch_size=batch_size)
+    #return cosine_similarity_batch(query, vecs, k=k, batch_size=batch_size)
+    return cosine_similarity(query, vecs, k=k, batch_size=batch_size)
 
 def run_sklearn_batch():
     all_scores = []
