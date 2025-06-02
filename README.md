@@ -46,6 +46,8 @@ Built with a Rust + SIMD backend, it offers the speed of native code with the ea
 
 🦀 Powered by Rust: Safe, high-performance core engine
 
+📉 Memory Efficient: Supports batching for speed and to reduce memory footprint
+
 <br/>
 
 ## 📦 Installation
@@ -66,18 +68,38 @@ pip install symrank
 
 ## 🧪 Usage
 
-### Basic Example
+### Basic Example (using python lists)
 
 ```python
 import symrank as sr
-#import numpy as np
 
 query = [0.1, 0.2, 0.3, 0.4]  
-#query = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float32)
 candidates = [
     ("doc_1", [0.1, 0.2, 0.3, 0.5]),
     ("doc_2", [0.9, 0.1, 0.2, 0.1]),
     ("doc_3", [0.0, 0.0, 0.0, 1.0]),
+]
+
+results = sr.cosine_similarity(query, candidates, k=2)
+print(results)
+```
+
+*Output*
+```python
+[{'id': 'doc_1', 'score': 0.9939991235733032}, {'id': 'doc_3', 'score': 0.7302967309951782}]
+```
+
+### Basic Example (using numpy arrays)
+
+```python
+import symrank as sr
+import numpy as np
+
+query = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float32)
+candidates = [
+    ("doc_1", np.array([0.1, 0.2, 0.3, 0.5], dtype=np.float32)),
+    ("doc_2", np.array([0.9, 0.1, 0.2, 0.1], dtype=np.float32)),
+    ("doc_3", np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float32)),
 ]
 
 results = sr.cosine_similarity(query, candidates, k=2)
@@ -98,6 +120,7 @@ cosine_similarity(
     query_vector,              # List[float] or np.ndarray
     candidate_vectors,         # List[Tuple[str, List[float] or np.ndarray]]
     k=5,                       # Number of top results to return
+    batch_size=None            # Optional: set for memory-efficient batching
 )
 ```
 
@@ -105,51 +128,19 @@ cosine_similarity(
 
 | Parameter         | Type                                               | Default     | Description |
 |-------------------|----------------------------------------------------|-------------|-------------|
-| `query_vector`     | list of float OR ndarray                          | _required_  | Vector to search with |
-| `candidate_vectors`| list of (str, vector) pairs  OR ndarray           | _required_  | (id, vector) pairs to compare against |
-| `k`                | int                                               | 5         | Number of top results to return |
-
+| `query_vector`     | `list[float]` or `np.ndarray`                       | _required_  | The query vector you want to compare against the candidate vectors. |
+| `candidate_vectors`| `list[tuple[str, list[float] or np.ndarray]]`          | _required_  | List of `(id, vector)` pairs. Each vector can be a list or NumPy array. |
+| `k`                | `int`                                               | 5         | Number of top results to return, sorted by descending similarity. |
+| `batch_size`       | `int` or `None`                                       | None      | Optional batch size to reduce memory usage. If None, uses SIMD directly. |
 
 ### Returns
 
-List of dictionaries with `id` and `score` (cosine similarity):
+List of dictionaries with `id` and `score` (cosine similarity), sorted by descending similarity:
 
 ```python
 [{"id": "doc_42", "score": 0.8763}, {"id": "doc_17", "score": 0.8451}, ...]
 ```
 
-
-
-
-<!--
-## Usage
-**Import the SymRank package**
-
-*Python Code:*
-```python
-from symrank import cosine_similarity
-```
-
-### Examples:
-
-#### 1. xxx
-```python
-# Example 1
-
-```
-
-#### 2. xxx
-```python
-# Example 2
-
-```
-
-#### 3. xxx
-```python
-# Example 3
-
-```
--->
 
 <br/>
 
