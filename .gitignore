@@ -189,3 +189,6 @@ cython_debug/
 
 # Ignore Cargo.lock for Rust library
 **/Cargo.lock
+
+# Ignore Claude Code files
+.claude/
