@@ -51,6 +51,42 @@ Built with a Rust + SIMD backend, it offers the speed of native code with the ea
 📉 Memory Efficient: Supports batching for speed and to reduce memory footprint
 
 <br/>
+Below are single-query cosine similarity benchmarks comparing SymRank to NumPy and scikit-learn across realistic re-ranking candidate sizes.
+<br/><br/>
+
+| Candidates (N) | SymRank matrix (ms) | NumPy normalized (ms) | sklearn (ms) | Fastest | SymRank Speedup |
+| -------------: | ------------------: | --------------------: | -----------: | ------- | -------------: |
+|             20 |               0.006 |                 0.027 |        0.210 | SymRank | 4.50x |
+|             50 |               0.017 |                 0.050 |        0.266 | SymRank | 2.92x |
+|            100 |               0.020 |                 0.086 |        0.390 | SymRank | 4.18x |
+|            500 |               0.169 |                 0.393 |        1.843 | SymRank | 2.32x |
+|          1,000 |               0.170 |                 0.669 |        3.588 | SymRank | 3.95x |
+|          5,000 |               0.748 |                 5.261 |       32.196 | SymRank | 7.03x |
+|         10,000 |               1.976 |                13.938 |       42.514 | SymRank | 7.05x |
+
+- Cosine similarity top k (k=5), embedding dimension 1536, float32.
+- NumPy baseline uses candidates normalized once and query normalized per call.
+- sklearn uses sklearn.metrics.pairwise.cosine_similarity.
+- Times are mean milliseconds per query on Windows.
+
+<br/>
+
+### Real-world benchmark (Hugging Face embeddings)
+
+Performance on 10,000 real OpenAI-style embeddings streamed from the Hugging Face Hub.
+
+| Method           | Mean time (ms) | Speedup vs SymRank |
+| ---------------- | -------------: | -----------------: |
+| SymRank matrix   |          1.800 |               1.0x |
+| SymRank list     |         22.753 |             12.64x |
+| NumPy normalized |         44.665 |             24.81x |
+| sklearn          |         42.709 |             23.73x |
+
+- Dataset: Qdrant/dbpedia-entities-openai3-text-embedding-3-large-1536-1M
+- k=5, float32, Windows
+- Mean time per query
+
+<br/>
 
 ## 📦 Installation
 
