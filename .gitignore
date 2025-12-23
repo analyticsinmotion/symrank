@@ -192,3 +192,6 @@ cython_debug/
 
 # Ignore Claude Code files
 .claude/
+
+# Ignore old archive files
+archive/
