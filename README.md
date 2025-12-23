@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 MD041 -->
 ![logo-symrank](https://github.com/user-attachments/assets/ce0b2224-d59a-4aab-a708-dcdc4968c54a)
 
 <h1 align="center">Similarity ranking for Retrieval-Augmented Generation</h1>
@@ -9,9 +10,9 @@
     <tr>
       <td><strong>Meta</strong></td>
       <td>
-        <a href="https://pypi.org/project/symrank/"><img src="https://img.shields.io/pypi/v/symrank?label=PyPI&color=blue"></a>&nbsp;
-        <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%7C3.11%7C3.12%7C3.13-blue?logo=python&logoColor=ffdd54"></a>&nbsp;
-        <a href="https://github.com/analyticsinmotion/symrank/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"></a>&nbsp;
+        <a href="https://pypi.org/project/symrank/"><img src="https://img.shields.io/pypi/v/symrank?label=PyPI&color=blue" alt="PyPI version"></a>&nbsp;
+        <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%7C3.11%7C3.12%7C3.13%7C3.14-blue?logo=python&logoColor=ffdd54" alt="Supports Python 3.10-3.14"></a>&nbsp;
+        <a href="https://github.com/analyticsinmotion/symrank/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache 2.0 License"></a>&nbsp;
         <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv"></a>&nbsp;
         <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>&nbsp;
         <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/Powered%20by-Rust-black?logo=rust&logoColor=white" alt="Powered by Rust"></a>&nbsp;
@@ -28,6 +29,7 @@
 <!-- badges: end -->
 
 ## ✨ What is SymRank?
+
 **SymRank** is a blazing-fast Python library for top-k cosine similarity ranking, designed for vector search, retrieval-augmented generation (RAG), and embedding-based matching.
 
 Built with a Rust + SIMD backend, it offers the speed of native code with the ease of Python.
@@ -54,12 +56,14 @@ Built with a Rust + SIMD backend, it offers the speed of native code with the ea
 
 You can install SymRank with 'uv' or alternatively using 'pip'.
 
-### Recommended (with uv):
+### Recommended (with uv)
+
 ```bash
 uv pip install symrank
 ```
 
-### Alternatively (using pip):
+### Alternatively (using pip)
+
 ```bash
 pip install symrank
 ```
@@ -84,7 +88,8 @@ results = sr.cosine_similarity(query, candidates, k=2)
 print(results)
 ```
 
-*Output*
+#### Output
+
 ```python
 [{'id': 'doc_1', 'score': 0.9939991235733032}, {'id': 'doc_3', 'score': 0.7302967309951782}]
 ```
@@ -106,7 +111,8 @@ results = sr.cosine_similarity(query, candidates, k=2)
 print(results)
 ```
 
-*Output*
+#### Output
+
 ```python
 [{'id': 'doc_1', 'score': 0.9939991235733032}, {'id': 'doc_3', 'score': 0.7302967309951782}]
 ```
@@ -147,8 +153,3 @@ List of dictionaries with `id` and `score` (cosine similarity), sorted by descen
 ## 📄 License
 
 This project is licensed under the Apache License 2.0.
-
-
-
-
-
