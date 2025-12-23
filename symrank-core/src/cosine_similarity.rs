@@ -74,7 +74,8 @@ pub fn cosine_similarity(
     } else {
         // Parallel
         references
-            .axis_iter(ndarray::Axis(0))
+            // .axis_iter(ndarray::Axis(0))
+            .axis_iter(numpy::ndarray::Axis(0))
             .into_par_iter()
             .enumerate()
             .map(|(i, ref_vec)| {
