@@ -88,22 +88,26 @@ pub fn cosine_similarity(
             .collect()
     };
 
+
     // Inline heap-based top-k selection
     let mut heap = BinaryHeap::with_capacity(k + 1);
     for (i, score) in scored {
-        let score = NotNan::new(score).unwrap_or(NotNan::new(0.0).unwrap());
+        let score = NotNan::new(score).unwrap_or_else(|_| NotNan::new(0.0).unwrap());
         heap.push(Reverse((score, i)));
         if heap.len() > k {
             heap.pop();
         }
     }
-    let mut result: Vec<_> = heap
+    // into_sorted_vec() is already sorted, reverse to get descending scores
+    let result: Vec<_> = heap
         .into_sorted_vec()
         .into_iter()
+        .rev()
         .map(|Reverse((score, i))| (i, score.into_inner()))
         .collect();
-    result.sort_unstable_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
     Ok(result)
+
+
     
 }
 
