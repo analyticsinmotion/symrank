@@ -72,12 +72,94 @@ pip install symrank
 
 ## 🧪 Usage
 
-### Basic Example (using python lists)
+SymRank provides two APIs optimized for different workflows.
+
+---
+
+### Option 1: `cosine_similarity_matrix` (recommended for performance)
+
+**Best when:**
+- Candidate embeddings are already stored as a single 2D NumPy array
+- Performance matters (about 10 to 14x faster for N=1,000 to 10,000 versus the list API)
+- Running many queries against the same candidate set
+
+```python
+import numpy as np
+from symrank import cosine_similarity_matrix
+
+# Example data (dimension = 4 for readability)
+query = np.array([1.0, 0.0, 0.0, 0.0], dtype=np.float32)
+
+candidate_matrix = np.array(
+    [
+        [1.0, 0.0, 0.0, 0.0],  # identical to query
+        [0.0, 1.0, 0.0, 0.0],  # orthogonal
+        [0.5, 0.5, 0.0, 0.0],  # partially aligned
+        [0.2, 0.1, 0.0, 0.0],  # weakly aligned
+    ],
+    dtype=np.float32,
+)
+
+ids = ["doc_a", "doc_b", "doc_c", "doc_d"]
+
+results = cosine_similarity_matrix(query, candidate_matrix, ids, k=3)
+print(results)
+```
+
+**Output:**
+```python
+[
+  {"id": "doc_a", "score": 1.0},
+  {"id": "doc_d", "score": 0.8944272},
+  {"id": "doc_c", "score": 0.70710677}
+]
+```
+
+Notes:
+- Scores are cosine similarity (range -1 to 1, higher = more similar)
+- Results are sorted by descending similarity
+
+**Typical production usage (1536-dimensional embeddings):**
+
+```python
+import numpy as np
+from symrank import cosine_similarity_matrix
+
+D = 1536
+N = 10_000
+
+query = np.random.rand(D).astype(np.float32)
+candidate_matrix = np.random.rand(N, D).astype(np.float32)
+ids = [f"doc_{i}" for i in range(N)]
+
+top5 = cosine_similarity_matrix(query, candidate_matrix, ids, k=5)
+for result in top5:
+    print(f"{result['id']}: {result['score']:.4f}")
+```
+
+**Optional batching for memory control:**
+```python
+# Process 10k candidates in batches of 2000
+results = cosine_similarity_matrix(
+    query, candidate_matrix, ids, k=5, batch_size=2000
+)
+```
+
+---
+
+### Option 2: `cosine_similarity` (flexible and convenient)
+
+**Best when:**
+- Candidates come from mixed or streaming sources
+- Vectors are naturally represented as (id, vector) pairs
+- Simplicity is more important than maximum throughput
+
+**Basic example using Python lists:**
 
 ```python
 import symrank as sr
 
-query = [0.1, 0.2, 0.3, 0.4]  
+query = [0.1, 0.2, 0.3, 0.4]
 candidates = [
     ("doc_1", [0.1, 0.2, 0.3, 0.5]),
     ("doc_2", [0.9, 0.1, 0.2, 0.1]),
@@ -88,13 +170,15 @@ results = sr.cosine_similarity(query, candidates, k=2)
 print(results)
 ```
 
-#### Output
-
+**Output:**
 ```python
-[{'id': 'doc_1', 'score': 0.9939991235733032}, {'id': 'doc_3', 'score': 0.7302967309951782}]
+[
+  {"id": "doc_1", "score": 0.9939991235733032},
+  {"id": "doc_3", "score": 0.7302967309951782}
+]
 ```
 
-### Basic Example (using numpy arrays)
+**Basic example using NumPy arrays:**
 
 ```python
 import symrank as sr
@@ -111,11 +195,47 @@ results = sr.cosine_similarity(query, candidates, k=2)
 print(results)
 ```
 
-#### Output
-
+**Output:**
 ```python
-[{'id': 'doc_1', 'score': 0.9939991235733032}, {'id': 'doc_3', 'score': 0.7302967309951782}]
+[
+  {"id": "doc_1", "score": 0.9939991235733032},
+  {"id": "doc_3", "score": 0.7302967309951782}
+]
 ```
+
+**Optional batching:**
+```python
+results = sr.cosine_similarity(query, candidates, k=5, batch_size=1000)
+```
+
+---
+
+### Performance Comparison
+
+| Dataset Size | Option 1 (matrix) | Option 2 (list) | Speedup |
+|--------------|-------------------|-----------------|---------|
+| N=100        | 0.02 ms           | 0.06 ms         | 3.3x    |
+| N=1,000      | 0.18 ms           | 2.28 ms         | 12.7x   |
+| N=10,000     | 1.50 ms           | 19.66 ms        | 13.1x   |
+
+*Benchmark: 1536-dimensional embeddings, k=5, Python 3.14, Windows. Benchmark includes Python-side overhead for each API.*
+
+---
+
+### Quick Decision Guide
+
+**Use `cosine_similarity_matrix` if:**
+- ✅ You have a pre-built NumPy matrix of candidates
+- ✅ Performance is critical
+- ✅ Processing many queries against the same corpus
+
+**Use `cosine_similarity` if:**
+- ✅ Building candidates on-the-fly
+- ✅ Mixed vector input types (lists or NumPy arrays)
+- ✅ Flexibility > raw speed
+
+Both functions return the same format: a list of dicts sorted by descending similarity score.
+
 
 <br/>
 
