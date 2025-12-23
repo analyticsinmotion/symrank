@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.1.6] - 2025-12-23
+## [0.2.0] - 2025-12-24
 
 ### Added
 
@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New `cosine_similarity_matrix` API for pre-built NumPy candidate matrices, achieving speedup over list-based API by eliminating Python object iteration overhead. Optimized for production RAG pipelines and vector search with large candidate sets.
 - Comprehensive test suite for `cosine_similarity_matrix` with 13 test cases covering edge cases, type conversions, batching behavior, and equivalence with existing API.
 - Benchmark script `matrix_vs_list_api.py` demonstrating performance comparison between matrix and list-based APIs across various dataset sizes.
+- Comprehensive benchmark script matrix_vs_numpy_sklearn.py comparing SymRank against multiple NumPy baseline strategies (naive, precomputed norms, normalized candidates) and scikit-learn, demonstrating large speedup across N=100-10,000.
 
 ### Changed
 
@@ -27,12 +28,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `rayon` 1.10.0 → 1.11.0
   - `rand` 0.9.1 → 0.9.2
   - `wide` 0.7.32 → 1.1.1
-
-### Fixed
-<!-- Add bug fixes here -->
+- Refactored speed_comparisons_streaming_10k.py to include matrix API comparison and align NumPy baseline with production-ready normalized candidates pattern.
 
 ### Removed
-<!-- Add removals/deprecations here -->
+
+- Archived deprecated benchmark scripts:
+  - `speed_comparison.py`
+  - `speed_comparisons_with_batch.py`
+  - `speed_standard_vs_batch.py`
+  - `results_comparisons.py`
+  - `speed_comparisons_streaming_10k_batch.py`
+  - `simd_vs_standard.py`
+- These scripts are superseded by the comprehensive matrix_vs_numpy_sklearn.py benchmark or test internal implementation details not relevant to users.
 
 ---
 
@@ -54,9 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved type hints and docstrings for all public APIs.
 - Cleaned up `__init__.py` to only expose the main APIs: `cosine_similarity`, `cosine_similarity_batch`, `cosine_similarity_simd`.
 - Consistent handling of batch_size=None and batch_size=0 (both now mean "no batching").
-
-### Removed
-<!-- Add removals/deprecations here -->
 
 ---
 
