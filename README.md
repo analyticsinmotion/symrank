@@ -79,6 +79,7 @@ SymRank provides two APIs optimized for different workflows.
 ### Option 1: `cosine_similarity_matrix` (recommended for performance)
 
 **Best when:**
+
 - Candidate embeddings are already stored as a single 2D NumPy array
 - Performance matters (about 10 to 14x faster for N=1,000 to 10,000 versus the list API)
 - Running many queries against the same candidate set
@@ -107,6 +108,7 @@ print(results)
 ```
 
 **Output:**
+
 ```python
 [
   {"id": "doc_a", "score": 1.0},
@@ -116,6 +118,7 @@ print(results)
 ```
 
 Notes:
+
 - Scores are cosine similarity (range -1 to 1, higher = more similar)
 - Results are sorted by descending similarity
 
@@ -138,6 +141,7 @@ for result in top5:
 ```
 
 **Optional batching for memory control:**
+
 ```python
 # Process 10k candidates in batches of 2000
 results = cosine_similarity_matrix(
@@ -150,6 +154,7 @@ results = cosine_similarity_matrix(
 ### Option 2: `cosine_similarity` (flexible and convenient)
 
 **Best when:**
+
 - Candidates come from mixed or streaming sources
 - Vectors are naturally represented as (id, vector) pairs
 - Simplicity is more important than maximum throughput
@@ -171,6 +176,7 @@ print(results)
 ```
 
 **Output:**
+
 ```python
 [
   {"id": "doc_1", "score": 0.9939991235733032},
@@ -196,6 +202,7 @@ print(results)
 ```
 
 **Output:**
+
 ```python
 [
   {"id": "doc_1", "score": 0.9939991235733032},
@@ -204,6 +211,7 @@ print(results)
 ```
 
 **Optional batching:**
+
 ```python
 results = sr.cosine_similarity(query, candidates, k=5, batch_size=1000)
 ```
@@ -225,17 +233,18 @@ results = sr.cosine_similarity(query, candidates, k=5, batch_size=1000)
 ### Quick Decision Guide
 
 **Use `cosine_similarity_matrix` if:**
+
 - ✅ You have a pre-built NumPy matrix of candidates
 - ✅ Performance is critical
 - ✅ Processing many queries against the same corpus
 
 **Use `cosine_similarity` if:**
+
 - ✅ Building candidates on-the-fly
 - ✅ Mixed vector input types (lists or NumPy arrays)
 - ✅ Flexibility > raw speed
 
 Both functions return the same format: a list of dicts sorted by descending similarity score.
-
 
 <br/>
 
@@ -252,12 +261,12 @@ cosine_similarity(
 
 ### 'cosine_similarity(...)' Parameters
 
-| Parameter         | Type                                               | Default     | Description |
-|-------------------|----------------------------------------------------|-------------|-------------|
-| `query_vector`     | `list[float]` or `np.ndarray`                       | _required_  | The query vector you want to compare against the candidate vectors. |
-| `candidate_vectors`| `list[tuple[str, list[float] or np.ndarray]]`          | _required_  | List of `(id, vector)` pairs. Each vector can be a list or NumPy array. |
-| `k`                | `int`                                               | 5         | Number of top results to return, sorted by descending similarity. |
-| `batch_size`       | `int` or `None`                                       | None      | Optional batch size to reduce memory usage. If None, uses SIMD directly. |
+| Parameter           | Type                                            | Default    | Description                                                                 |
+| ------------------- | ----------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
+| `query_vector`      | `list[float]` or `np.ndarray`                   | *required* | The query vector you want to compare against the candidate vectors.         |
+| `candidate_vectors` | `list[tuple[str, list[float] or np.ndarray]]`   | *required* | List of `(id, vector)` pairs. Each vector can be a list or NumPy array.     |
+| `k`                 | `int`                                           | 5          | Number of top results to return, sorted by descending similarity.           |
+| `batch_size`        | `int` or `None`                                 | None       | Optional batch size to reduce memory usage. If None, uses SIMD directly.    |
 
 ### Returns
 
@@ -266,7 +275,6 @@ List of dictionaries with `id` and `score` (cosine similarity), sorted by descen
 ```python
 [{"id": "doc_42", "score": 0.8763}, {"id": "doc_17", "score": 0.8451}, ...]
 ```
-
 
 <br/>
 
