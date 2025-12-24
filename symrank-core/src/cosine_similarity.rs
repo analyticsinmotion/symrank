@@ -1,7 +1,9 @@
+// symrank-core/cosine_similarity.rs
 use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
 use numpy::{PyReadonlyArray1, PyReadonlyArray2, PyUntypedArrayMethods};
-use ndarray::parallel::prelude::*;
+// use ndarray::parallel::prelude::*;
+use rayon::prelude::*;
 use std::collections::BinaryHeap;
 use std::cmp::Reverse;
 use ordered_float::NotNan;
@@ -28,6 +30,10 @@ pub fn cosine_similarity(
         ));
     }
 
+    if k == 0 {
+        return Ok(Vec::new());
+    }
+
     let query = query.as_slice().map_err(|_| PyValueError::new_err("Failed to convert query to slice"))?;
 
     // --- Ensure standard (C-contiguous) layout for SIMD ---
@@ -44,6 +50,9 @@ pub fn cosine_similarity(
 
     //let query_norm = query.iter().map(|x| x * x).sum::<f32>().sqrt();
     let query_norm = fused_norm(query);
+    if query_norm == 0.0 {
+        return Ok(Vec::new());
+    }
     let inv_query_norm = 1.0 / query_norm; // Precompute reciprocal
 
     // Adaptive serial/parallel scoring
@@ -57,33 +66,84 @@ pub fn cosine_similarity(
         1000
     };
 
+    // let scored: Vec<(usize, f32)> = if n_refs < crossover {
+    //     // Serial
+    //     references
+    //         .outer_iter()
+    //         .enumerate()
+    //         .map(|(i, ref_vec)| {
+    //             let ref_slice = ref_vec.as_slice().unwrap();
+    //             let (dot, norm2) = fused_dot_and_norm(query, ref_slice);
+    //             // let sim = dot / (query_norm * norm2);
+    //             let inv_norm2 = 1.0 / norm2;
+    //             let sim = dot * inv_query_norm * inv_norm2; // Use multiplication instead of division
+    //             (i, sim)
+    //         })
+    //         .collect()
+    // } else {
+    //     // Parallel
+    //     references
+    //         // .axis_iter(ndarray::Axis(0))
+    //         // .axis_iter(numpy::ndarray::Axis(0))
+    //         .outer_iter()
+    //         .into_par_iter()
+    //         .enumerate()
+    //         .map(|(i, ref_vec)| {
+    //             let ref_slice = ref_vec.as_slice().unwrap();
+    //             let (dot, norm2) = fused_dot_and_norm(query, ref_slice);
+    //             // let sim = dot / (query_norm * norm2);
+    //             let inv_norm2 = 1.0 / norm2;
+    //             let sim = dot * inv_query_norm * inv_norm2; // Use multiplication instead of division
+    //             (i, sim)
+    //         })
+    //         .collect()
+    // };
+
+    
+    // Drop-in replacement for the scored block, using index-based Rayon and raw row slices.
+    // Requires: `use rayon::prelude::*;`
+    // Assumes: `references` is already `as_standard_layout()` as in your code.
+
+    let d = query.len();
+
+    // After `as_standard_layout()`, this should be a contiguous slice.
+    // If it is not, treat that as an error because SIMD assumes contiguous rows.
+    let refs = references
+        .as_slice()
+        .ok_or_else(|| PyValueError::new_err("Failed to get contiguous slice for references"))?;
+
     let scored: Vec<(usize, f32)> = if n_refs < crossover {
         // Serial
-        references
-            .outer_iter()
-            .enumerate()
-            .map(|(i, ref_vec)| {
-                let ref_slice = ref_vec.as_slice().unwrap();
+        (0..n_refs)
+            .map(|i| {
+                let start = i * d;
+                let ref_slice = &refs[start..start + d];
                 let (dot, norm2) = fused_dot_and_norm(query, ref_slice);
-                // let sim = dot / (query_norm * norm2);
-                let inv_norm2 = 1.0 / norm2;
-                let sim = dot * inv_query_norm * inv_norm2; // Use multiplication instead of division
+                // let inv_norm2 = 1.0 / norm2;
+                // let sim = dot * inv_query_norm * inv_norm2;
+                let sim = if norm2 == 0.0 {
+                    0.0
+                } else {
+                    dot * inv_query_norm * (1.0 / norm2)
+                };
                 (i, sim)
             })
             .collect()
     } else {
         // Parallel
-        references
-            // .axis_iter(ndarray::Axis(0))
-            .axis_iter(numpy::ndarray::Axis(0))
+        (0..n_refs)
             .into_par_iter()
-            .enumerate()
-            .map(|(i, ref_vec)| {
-                let ref_slice = ref_vec.as_slice().unwrap();
+            .map(|i| {
+                let start = i * d;
+                let ref_slice = &refs[start..start + d];
                 let (dot, norm2) = fused_dot_and_norm(query, ref_slice);
-                // let sim = dot / (query_norm * norm2);
-                let inv_norm2 = 1.0 / norm2;
-                let sim = dot * inv_query_norm * inv_norm2; // Use multiplication instead of division
+                // let inv_norm2 = 1.0 / norm2;
+                // let sim = dot * inv_query_norm * inv_norm2;
+                let sim = if norm2 == 0.0 {
+                    0.0
+                } else {
+                    dot * inv_query_norm * (1.0 / norm2)
+                };
                 (i, sim)
             })
             .collect()
