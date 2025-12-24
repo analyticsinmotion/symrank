@@ -10,7 +10,7 @@ name = "symrank" # <-- This is the name of the compiled Python module
 crate-type = ["cdylib"]
 
 [dependencies]
-ndarray = { version = "0.16.1", features = ["rayon"] }
+# ndarray = { version = "0.17.1", features = ["rayon"] }
 numpy = "0.27.1"
 ordered-float = "5.1.0"
 pyo3 = { version = "0.27.2", features = ["extension-module"] }
