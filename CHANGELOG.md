@@ -29,6 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `rand` 0.9.1 → 0.9.2
   - `wide` 0.7.32 → 1.1.1
 - Refactored speed_comparisons_streaming_10k.py to include matrix API comparison and align NumPy baseline with production-ready normalized candidates pattern.
+- Optimized cosine similarity scoring loop with explicit zero-norm handling for query and candidate vectors.
+- Stabilized SIMD-based cosine similarity implementation while preserving existing performance characteristics.
+
+### Fixed
+
+- Prevented division-by-zero in cosine similarity when encountering zero-norm candidate vectors.
+- Resolved duplicate `ndarray` dependency versions by aligning all crates to `ndarray` 0.17.1.
 
 ### Removed
 
